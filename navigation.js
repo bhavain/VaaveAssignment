@@ -22,10 +22,12 @@ const AppStackNavigator = createStackNavigator({
       navigationOptions: { title: "Search" } 
     },
     PostScreen: {
-        screen: PostScreen
+        screen: PostScreen,
+        path: 'post/:postId',
     },
     UserScreen: {
         screen: UserScreen,
+        path: 'user/:userId',
     },                          
   },
     {
@@ -45,4 +47,9 @@ const AppStackNavigator = createStackNavigator({
   
   )
   const AppContainer = createAppContainer(AppStackNavigator);
-  export default AppContainer;  
+
+  const prefix = 'https://60ini.app.link/';
+
+  const MainApp = () => <AppContainer uriPrefix={prefix} />;
+
+  export default MainApp;  

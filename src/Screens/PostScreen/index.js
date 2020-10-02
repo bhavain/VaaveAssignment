@@ -17,18 +17,49 @@ class PostScreen extends Component {
       };
 
       state={
+        post:'',
         comments:[],
         activeSections: [],
       };
 
 
       async componentDidMount() {
-        this.loadData();
+        this.loadPost();
+        this.loadComments();
+
     }
 
-    loadData = async () => {
+    loadPost = async () => {
 
-        var postID = this.props.navigation.getParam("post").id;
+      var postID = this.props.navigation.getParam("postId");
+
+      await axios({
+          method: 'get',
+          url: API + 'posts/'+ postID,
+          headers: {
+            'content-type': 'application/json; charset=utf-8',
+          },
+        }).then(async res => {
+      
+           //console.log(JSON.stringify(res.data))
+           
+           this.setState({ post: res.data });       
+     
+         
+      
+        })
+          .catch(err => {
+      
+            ToastAndroid.show(err.response,ToastAndroid.LONG)
+            console.log("err"+err)
+      
+          })
+
+  }
+
+    loadComments = async () => {
+
+        var postID = this.props.navigation.getParam("postId");
 
         await axios({
             method: 'get',
@@ -82,15 +113,16 @@ class PostScreen extends Component {
 
 
     render(){
-      var post = this.props.navigation.getParam("post");
+      var post = this.state.post;
       const user = this.props.users.find(user=>user.id===post.userId)
+      //console.log("user"+user)
 
         return (
             
             <ScrollView style={styles.container}>
 
               <View style={styles.postContainer}>
-                <Text style={[styles.textStyle,{fontSize: 15}]}><Text style={{fontWeight:"bold"}}>{user.username}</Text> {post.title}</Text>
+                <Text style={[styles.textStyle,{fontSize: 15}]}><Text style={{fontWeight:"bold"}}>{user?user.username:""}</Text> {post.title}</Text>
                 <Text style={[styles.textStyle,{fontSize: 15}]}>{post.body}</Text>
 
               </View>

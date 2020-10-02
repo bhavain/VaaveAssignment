@@ -13,7 +13,7 @@ class Home extends Component {
 
     state={
         posts:[],
-        refreshing:true
+        refreshing:true,
     }
 
    
@@ -36,7 +36,7 @@ class Home extends Component {
         
              console.log(JSON.stringify(res.data))
              
-             this.props.addUsersData(res.data)
+             await this.props.addUsersData(res.data)
            
         
           })
@@ -79,7 +79,7 @@ class Home extends Component {
 
 
     render(){
-        return (
+      if(this.state.posts.length!==0) return (
                   <View>
                         <FlatList
                             data={this.state.posts}
@@ -88,15 +88,15 @@ class Home extends Component {
                             contentContainerStyle={styles.container}
                             showsVerticalScrollIndicator={false}
                             renderItem={({ item }) => {
-                                const userName = this.props.users.find(user=>user.id===item.userId).username
+                                let user = this.props.users.find(user=>user.id===item.userId)
                             return (
-                                <TouchableHighlight onPress={()=>this.props.navigation.navigate("PostScreen",{post:item})}
+                                <TouchableHighlight onPress={()=>this.props.navigation.navigate("PostScreen",{postId:item.id})}
                                                     underlayColor="black" activeOpacity={0.8}>
                                 <View style={styles.itemContainer} >
                                     <Image style={{width:30,height:30,alignSelf:"center"}} source={require('../../../assets/images/post.png')}/>
                                     <View>
-                                    <TouchableOpacity onPress={()=>this.props.navigation.navigate("UserScreen",{userId:item.userId,username:userName})}>
-                                        <Text style={styles.userNameStyle}>{userName}</Text>
+                                    <TouchableOpacity onPress={()=>this.props.navigation.navigate("UserScreen",{userId:item.userId})}>
+                                        <Text style={styles.userNameStyle}>{user.username}</Text>
                                     </TouchableOpacity>
 
                                     <Text numberOfLines={1} style={styles.titleStyle}>{item.title}</Text>
@@ -112,6 +112,7 @@ class Home extends Component {
                         </TouchableOpacity>    
                   </View>
         )
+        else return <View><Text>Loading...</Text></View>
     }
 }  
 

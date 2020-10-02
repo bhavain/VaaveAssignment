@@ -10,11 +10,21 @@ class UserScreen extends Component {
           title:navigation.getParam("username")
         }
       };
+      state={user:''};
+
+      componentDidMount(){
+        const userId = parseInt(this.props.navigation.getParam("userId"));
+        const user = this.props.users.find(user=>user.id===userId)
+        this.props.navigation.setParams({"username":user.username});
+        //console.log("user"+user)
+        this.setState({user})
+        
+      }
 
 
     render(){
-        const user = this.props.users.find(user=>user.id===this.props.navigation.getParam("userId"))
-        return (
+      let user = this.state.user;
+        if(user!=='')return (
             
             <View style={styles.container}>
                 <Text style={styles.header}>User Info</Text>
@@ -25,6 +35,7 @@ class UserScreen extends Component {
                 <Text style={styles.textStyle}><Text style={{color:"grey"}}>Company Name: </Text>{user.company.name}</Text>
             </View>
         );
+        else return <View><Text>Loading...</Text></View>
     }
 }
 
